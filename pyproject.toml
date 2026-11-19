@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "boldgen"
+version = "0.1.0"
+description = "Bake real Bold faces for font families that have none, so applications with broken synthetic-bold rendering show bold text correctly."
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+license-files = ["LICENSE", "NOTICE"]
+authors = [{ name = "heyikui1980" }]
+keywords = ["font", "fonts", "bold", "synthetic-bold", "fontconfig", "cjk", "typography", "wps"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Topic :: Text Processing :: Fonts",
+]
+dependencies = []
+
+[project.optional-dependencies]
+# 可选：仅在需要 CFF/OTF 支持、子集化或交叉校验时安装。
+# 内置引擎覆盖 TrueType(glyf) 轮廓字体，不需要 fontTools。
+ft = ["fonttools>=4.40"]
+dev = ["pytest>=7.0", "build>=1.0", "fonttools>=4.40"]
+
+[project.scripts]
+boldgen = "boldgen.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/heyikui1980/boldgen"
+Repository = "https://github.com/heyikui1980/boldgen"
+Issues = "https://github.com/heyikui1980/boldgen/issues"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "tests"]

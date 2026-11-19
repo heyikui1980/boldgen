@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+
+# pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# 本项目生成的产物（绝不入库：衍生字体有授权问题）
+*.ttf
+*.ttc
+*.otf
+*.otc
+out/
+*.boldgen-manifest.json
+manifest.json
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+*.swp
+.DS_Store

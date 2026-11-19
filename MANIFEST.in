@@ -1,0 +1,21 @@
+include LICENSE
+include NOTICE
+include README.md
+include README.en.md
+include CONTRIBUTING.md
+include CHANGELOG.md
+include MANIFEST.in
+include pyproject.toml
+
+recursive-include docs *.md
+recursive-include tests *.py
+recursive-include .github *.yml
+
+# 绝不要把字体文件打进发行包：衍生字体受源字体授权约束。
+global-exclude *.ttf
+global-exclude *.ttc
+global-exclude *.otf
+global-exclude *.otc
+prune .venv
+prune dist
+prune build

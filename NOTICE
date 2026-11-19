@@ -1,0 +1,37 @@
+# NOTICE
+
+## 本项目只分发软件，不分发任何字体文件
+
+`boldgen` 是一个**生成器**。它读取你机器上已经安装的字体，在本地生成对应的
+Bold 字体文件。仓库、PyPI 包、GitHub Release 中**不包含任何字体文件**。
+
+## 生成物的授权
+
+生成物是原字体的**衍生作品（derivative work）**，其使用权完全继承原字体的授权：
+
+| 原字体类型 | 典型例子 | 是否允许再分发衍生版 |
+|---|---|---|
+| 商用/需授权 | SimSun(宋体)、SimHei(黑体)、KaiTi(楷体)、FangSong(仿宋)、方正系列、ST 系列（华文系列） | **否**。仅限你本人本机使用 |
+| 需商业授权 | Adobe 系列、思源系列的商用授权版本 | **否**，除非你持有对应授权 |
+| 开源字体 | Noto CJK、思源黑体/宋体（OFL）、文泉驿（GPL+FE）、文鼎系列（Arphic Public License） | 需遵守原许可证（OFL 通常要求保留许可证与保留声明，衍生版不得使用 "Noto" 保留名称） |
+| 自由字体 | DejaVu、Liberation、Arimo/Tinos/Cousine（Apache 2.0） | 需遵守原许可证 |
+
+### 实践建议
+
+1. **只在你自己的机器上生成和使用。** 不要把生成的 `.ttf` 放进任何仓库、
+   Release、压缩包或聊天记录里，除非你确认原字体的许可证明确允许再分发。
+2. **改名。** 生成物的 PostScript 名会加 `-Bold` 后缀（`-Bold` / `-BoldSynthetic`
+   由 `--suffix` 控制），但**家族名保持不变**——这是为了让 fontconfig 能把
+   加粗请求匹配到它。改家族名会破坏匹配。
+3. **不要用保留名称。** OFL 等许可证要求衍生版不能使用原字体的保留名称。
+   如果你打算再分发生成物，请参考 `docs/licensing.zh.md` 里的处理方式。
+4. **本项目不承担字体授权责任。** 你对生成物的使用是否符合原字体授权，
+   由你自己判断。
+
+## 商标与致谢
+
+本项目与金山办公（WPS Office）、Google、The FreeType Project、fontconfig
+项目无隶属关系，仅为其工具生态中的独立工具。
+
+TrueType / OpenType 轮廓外扩算法参考了 FreeType 的 `FT_Outline_Embolden`
+思路，但本项目为独立实现，未复制 FreeType 代码。
