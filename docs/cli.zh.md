@@ -157,8 +157,8 @@ boldgen list --json
 ```
 已安装 22 个粗体 face（/home/hyk/.local/share/fonts/boldgen）：
 
-  FangSong                  FangSong-Bold.ttf            2.9 MB
-      源: /usr/share/fonts/truetype/winfonts/FANGSONG.TTF
+  FangSong                 FangSong-Bold.ttf                10.7 MB
+      源: /usr/share/fonts/truetype/winfonts/simfang.ttf
   ...
 ```
 

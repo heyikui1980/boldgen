@@ -9,20 +9,21 @@
 
 ```
 $ boldgen scan --missing-bold
-共 51 个字体家族（仅中文字体）：
+共 73 个字体家族（仅中文字体）：
 
-家族                                          状态  中文  源文件
---------------------------------------------  ---  --  -------------------------------
-AR PL UKai CN                                 缺粗体  是  /usr/share/fonts/truetype/arphic/ukai.ttc#0
-LiSu (隶书)                                   缺粗体  是  /usr/share/fonts/truetype/winfonts/SIMLI.TTF
-SimHei (黑体)                                 缺粗体  是  /usr/share/fonts/truetype/winfonts/simhei.ttf
+家族                                                          状态    中文  源文件
+------------------------------------------------------------  ------  ----  ---------------------------------------------------------------
+AR PL UKai CN                                                 缺粗体  是    /usr/share/fonts/truetype/arphic/ukai.ttc#0
+AR PL UKai HK                                                 缺粗体  是    /usr/share/fonts/truetype/arphic/ukai.ttc#1
+AR PL UKai TW                                                 缺粗体  是    /usr/share/fonts/truetype/arphic/ukai.ttc#2
+AR PL UKai TW MBE                                             缺粗体  是    /usr/share/fonts/truetype/arphic/ukai.ttc#3
 ...
 
 $ boldgen generate --family 宋体 --family 黑体
 ✓ 生成 2 个粗体 face：
     SimSun    SimSun-Bold.ttf  字形 28862  半径 4  10.1 MB
-    SimHei    SimHei-Bold.ttf  字形 8192  半径 4  2.9 MB
-  合计 13.0 MB
+    SimHei    SimHei-Bold.ttf  字形 28562  半径 4  10.0 MB
+  合计 20.1 MB
   已安装到 /home/you/.local/share/fonts/boldgen
   fontconfig 缓存已刷新
 ```
