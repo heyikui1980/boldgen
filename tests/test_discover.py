@@ -10,6 +10,7 @@ from boldgen.discover import (
     Face,
     FamilyInfo,
     _parse_line,
+    escape_pattern,
 )
 
 
@@ -112,3 +113,30 @@ def test_location_for_collection():
     assert collection.location == "/a.ttc#2"
     plain = Face("/a.ttf", 0, "f", ["f"], "Regular", ["Regular"], 80, 0)
     assert plain.location == "/a.ttf"
+
+
+# ---------------------------------------------------------------------------
+# 模式转义
+# ---------------------------------------------------------------------------
+
+def test_escape_pattern_escapes_hyphen():
+    """fontconfig 会把家族名里第一个连字符之后的内容当成"样式后缀"丢掉。
+
+    ``fc-pattern "SimSun-Bold"`` 解析出来是 ``family="SimSun"``——
+    不转义的话，带连字符的家族名永远匹配不上任何字体。
+    """
+    assert escape_pattern("SimSun-Bold") == r"SimSun\-Bold"
+    assert escape_pattern("FZFangSong-Z02") == r"FZFangSong\-Z02"
+
+
+def test_escape_pattern_escapes_pattern_delimiters():
+    assert escape_pattern("A:B") == r"A\:B"
+    assert escape_pattern("A,B") == r"A\,B"
+    assert escape_pattern("A=B") == r"A\=B"
+    assert escape_pattern("A\\B") == r"A\\B"
+
+
+def test_escape_pattern_leaves_plain_names_alone():
+    assert escape_pattern("SimSun") == "SimSun"
+    assert escape_pattern("宋体") == "宋体"
+    assert escape_pattern("Noto Sans CJK SC") == "Noto Sans CJK SC"

@@ -147,7 +147,7 @@ boldgen generate --family 宋体 --family 黑体 --family 楷体
 
 # 4. 确认装了什么
 boldgen list
-boldgen check          # 源字体变了会提示产物过期
+boldgen check          # 源字体变了会提示产物过期；也会检查加粗请求有没有被 fontconfig 劫持
 
 # 5. 撤销
 boldgen uninstall --family 宋体
@@ -163,7 +163,7 @@ boldgen uninstall --all
 | `boldgen generate` | 为指定家族生成粗体 face |
 | `boldgen alias` | fontconfig 别名模式（列出 / 写入 / 删除规则） |
 | `boldgen list` | 列出已安装的产物 |
-| `boldgen check` | 检测源字体变化导致的产物过期 |
+| `boldgen check` | 检测源字体变化导致的产物过期；并检查加粗请求是否真的命中产物 |
 | `boldgen uninstall` | 移除已安装的产物 |
 | `boldgen mktest` | 生成用于人工验证的 `.docx` 测试文档 |
 

@@ -19,7 +19,7 @@ import subprocess
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Sequence
 
-from .cjk import is_cjk_name
+from .cjk import CJK_SAMPLE_CODEPOINTS, is_cjk_name
 from .sfnt import Font
 
 __all__ = [
@@ -27,6 +27,9 @@ __all__ = [
     "FamilyInfo",
     "scan",
     "probe_font",
+    "fc_match",
+    "escape_pattern",
+    "fc_file_families",
     "BOLD_WEIGHT_THRESHOLD",
     "REGULAR_WEIGHT",
 ]
@@ -233,7 +236,7 @@ def scan(
     # 先查覆盖汉字的字体
     han_paths: set = set()
     if cjk_only:
-        for line in _run_fc_list(charset="4e00"):
+        for line in _run_fc_list(charset=f"{CJK_SAMPLE_CODEPOINTS[0]:x}"):
             parts = line.split("\t")
             if len(parts) < 2:
                 continue
@@ -295,3 +298,101 @@ def missing_bold(
         for info in scan(cjk_only=cjk_only, exclude_dirs=exclude_dirs)
         if not info.has_real_bold
     ]
+
+
+#: fontconfig 模式字符串里需要转义的字符。
+#:
+#: ``FcNameParse`` 用 ``:`` 分属性、``,`` 分值、``=`` 赋值，反斜杠转义。
+#: 空格是安全的（``"Noto Sans CJK SC"`` 本来就能解析）。
+_PATTERN_SPECIALS = "\\:,="
+
+
+def escape_pattern(value: str) -> str:
+    """把家族名转义成 fontconfig 模式里安全的字面量。
+
+    **连字符必须转义**：``FcNameParse`` 会把家族名里**第一个连字符之后的
+    整段**当成"样式后缀"丢掉——``fc-pattern "SimSun-Bold"`` 解析出来是
+    ``family="SimSun"``，``fc-pattern "FZFangSong-Z02"`` 解析出来是
+    ``family="FZFangSong"``。不转义的话，这类家族名永远匹配不上任何字体，
+    ``fc-match`` 会静默回落到 sans-serif。
+
+    转义写法是 ``"FZFangSong\\-Z02"``（反斜杠 + 原字符）。
+    """
+    out: List[str] = []
+    for ch in value:
+        if ch in _PATTERN_SPECIALS or ch == "-":
+            out.append("\\")
+        out.append(ch)
+    return "".join(out)
+
+
+def fc_file_families(path: str) -> List[str]:
+    """某个字体文件在 fontconfig 看来属于哪些家族名。
+
+    一个中文字体通常同时有英文名和中文名（``"FZFangSong-Z02,方正仿宋_GBK"``），
+    应用用哪个名字请求加粗是不确定的，所以自检要把所有名字都查一遍。
+    """
+    fmt = "%{family}\n"
+    try:
+        proc = subprocess.run(
+            ["fc-list", f"--format={fmt}", os.path.abspath(path)],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    except FileNotFoundError:
+        return []
+    if proc.returncode != 0:
+        return []
+    names: List[str] = []
+    for line in proc.stdout.splitlines():
+        for item in line.split(","):
+            item = item.strip()
+            if item and item not in names:
+                names.append(item)
+    return names
+
+
+def fc_match(pattern: str) -> Optional[Dict[str, object]]:
+    """查询 fontconfig 对某个模式的最优匹配。
+
+    用途：确认"某家族 + 加粗"的请求**确实**落到了本工具生成的产物上。
+    如果中间有 fontconfig 别名规则（``<alias binding="strong">``）把家族名
+    重定向到别的字体，加粗请求就会被劫持——生成得再好也没用。
+
+    传入的应该是**模式字符串**（如 ``"SimSun:bold"``），不是裸家族名；
+    裸家族名请先过 :func:`escape_pattern`。
+
+    Returns:
+        含 ``file`` / ``family`` / ``style`` / ``weight`` 的字典；
+        查询失败时返回 None。
+    """
+    fmt = "%{file}\t%{family}\t%{style}\t%{weight}\n"
+    try:
+        proc = subprocess.run(
+            ["fc-match", f"--format={fmt}", pattern],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    except FileNotFoundError:
+        return None
+    if proc.returncode != 0:
+        return None
+    line = proc.stdout.strip()
+    if not line:
+        return None
+    parts = line.split("\t")
+    if len(parts) < 4:
+        return None
+    try:
+        weight = int(parts[3])
+    except ValueError:
+        weight = 0
+    return {
+        "pattern": pattern,
+        "file": parts[0],
+        "family": parts[1],
+        "style": parts[2],
+        "weight": weight,
+    }

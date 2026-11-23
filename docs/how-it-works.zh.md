@@ -168,7 +168,71 @@ bug 也就绕过去了。**
 
 ---
 
-## 三、参考资料
+## 三、fontconfig 在链路里的位置
+
+产物装进 `~/.local/share/fonts/boldgen/` 只是第一步。
+应用发起"某某家族，要粗体"的请求后，**fontconfig 决定最终用哪个文件**。
+这一层有两个坑，`boldgen check` 会把它们查出来。
+
+### 3.1 strong 别名会整段劫持家族名
+
+```xml
+<alias binding="strong">
+  <family>FangSong</family>
+  <prefer>
+    <family>Noto Serif CJK SC</family>
+  </prefer>
+</alias>
+```
+
+`binding="strong"` 的含义是**把整个家族名列表替换掉**（而不是往里追加），
+并且**对所有字重生效**。所以上面这条规则一存在：
+
+* `fc-match "FangSong"` → Noto Serif CJK SC Regular
+* `fc-match "FangSong:bold"` → Noto Serif CJK SC Bold
+
+产物本身没问题，但请求根本到不了它头上。
+`boldgen check` 会把这种情况和"只有加粗被劫持"区分开：
+前者是系统/用户本来就配了别名（与本工具无关），
+后者才是"装了却没效果"。
+
+### 3.2 模式解析器会吃掉连字符之后的内容
+
+fontconfig 的模式解析器 `FcNameParse` 把家族名里**第一个连字符之后的整段**
+当成"样式后缀"丢掉：
+
+```
+$ fc-pattern "SimSun-Bold"
+Pattern has 1 elts (size 16)
+    family: "SimSun"(s)
+
+$ fc-pattern "FZFangSong-Z02"
+Pattern has 1 elts (size 16)
+    family: "FZFangSong"(s)
+```
+
+后果是 `fc-match "FZFangSong-Z02"` 会**静默**匹配失败并回落到 sans-serif，
+`fc-match "FZFangSong-Z02:bold"` 同理。
+
+正确写法是用反斜杠转义连字符：
+
+```
+$ fc-match "FZFangSong\\-Z02:bold"
+FZFangSong-Z02,方正仿宋_GBK:Bold:/home/hyk/.local/share/fonts/boldgen/FZFSK--GBK1-0-Bold.ttf
+```
+
+`boldgen` 内部的 fontconfig 查询都做了转义（`discover.escape_pattern`），
+但你手敲 `fc-match` 排查问题时记得也要加。
+
+### 3.3 一个家族往往有多个名字
+
+中文字体通常同时带英文名和中文名（`FZFangSong-Z02` 与 `方正仿宋_GBK`）。
+应用用哪个名字请求加粗是不确定的，所以 `boldgen check` 会把**每一个**名字
+都查一遍——本机上"中文名正常、英文名被 strong 别名劫持"的情况就是这样。
+
+---
+
+## 四、参考资料
 
 * FreeType `FT_Outline_Embolden` 源码：
   <https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/src/base/ftoutln.c>

@@ -4,6 +4,24 @@
 
 ## [未发布]
 
+### 修复
+
+- **`boldgen check` 的 fontconfig 命中检查现在会转义家族名**。
+  fontconfig 的模式解析器（`FcNameParse`）会把家族名里**第一个连字符之后的
+  整段**当成"样式后缀"丢掉——`fc-pattern "FZFangSong-Z02"` 解析出来是
+  `family="FZFangSong"`，于是 `fc-match "FZFangSong-Z02"` 会**静默**匹配失败
+  并回落到 sans-serif。不转义的话，这类家族名会被误报成"加粗请求被劫持"。
+  新增 `boldgen.discover.escape_pattern()`。
+- 命中检查现在会把一个家族**所有的名字**（英文名 + 中文名）都查一遍，
+  而不是只查主名。
+- 区分两种"没命中"：
+  - 只有加粗被劫持 → ⚠ 警告（本工具需要提醒的问题）；
+  - 常规字重也被劫持 → ℹ 提示（fontconfig 里本来就有的 strong 别名，与产物无关）。
+- `boldgen check` 新增 `--no-fc-check`，可跳过 fontconfig 命中检查。
+- `boldgen generate` 支持源字体是 `.ttc` 的第 N 个 face（此前会误报
+  "非 TTC 文件只能取 face 0"）。
+- 报告表格按**显示宽度**对齐，中文列不再歪。
+
 ## [0.1.0] — 2026-11-19
 
 首个版本。
@@ -74,7 +92,7 @@
 
 ### 测试
 
-- 158 个测试，全部用内置 writer 现场构造字体，**不依赖任何外部字体文件**，
+- 177 个测试，全部用内置 writer 现场构造字体，**不依赖任何外部字体文件**，
   在任何机器上结果一致。
 
 ### 已知限制

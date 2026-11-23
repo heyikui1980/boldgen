@@ -21,7 +21,14 @@ from typing import Dict, List, Optional, Sequence, Tuple
 from . import __version__
 from .alias import AliasRule
 from .builder import BuildOptions, BuildResult, UnsupportedFontError, build_bold
-from .discover import FamilyInfo, Face, scan
+from .discover import (
+    FamilyInfo,
+    Face,
+    escape_pattern,
+    fc_file_families,
+    fc_match,
+    scan,
+)
 from .install import (
     INSTALL_DIR,
     ManifestEntry,
@@ -302,6 +309,8 @@ def cmd_check(args: argparse.Namespace) -> int:
         return 0
     stale: List[str] = []
     missing: List[str] = []
+    shadowed: List[str] = []
+    aliased: List[str] = []
     for entry in entries:
         target = os.path.join(install_dir, entry.output)
         if not os.path.exists(target):
@@ -315,8 +324,52 @@ def cmd_check(args: argparse.Namespace) -> int:
                 continue
             if current != entry.source_sha256:
                 stale.append(f"{entry.family}（源文件已变化：{entry.source}）")
-    if not stale and not missing:
-        print(f"✓ {len(entries)} 个产物都是最新的。")
+        # 加粗请求是否真的落到了产物上？被 fontconfig 别名劫持的话，
+        # 产物再完美也不会被用上——这是"装了却没效果"最常见的原因。
+        if not args.no_fc_check:
+            # 一个家族往往有多个名字（英文名 + 中文名），应用用哪个不确定，
+            # 所以每个名字都要查一遍。家族名里的连字符必须转义，否则
+            # fontconfig 会把它当成"家族-样式"后缀丢掉，静默匹配失败。
+            names = fc_file_families(target) or [entry.family]
+            for name in names:
+                pattern = escape_pattern(name)
+                match = fc_match(f"{pattern}:bold")
+                if match is None:
+                    continue
+                matched = os.path.abspath(str(match["file"]))
+                if matched == os.path.abspath(target):
+                    continue
+                # 加粗被劫持了。看看常规字重是不是也被劫持了：
+                # 两者都被劫持说明是 fontconfig 里本来就有的 strong 别名
+                # （用户自己配的），跟本工具的产物无关；
+                # 只有加粗被劫持才是本工具需要提醒的"装了却没效果"。
+                plain = fc_match(pattern)
+                plain_file = (
+                    os.path.abspath(str(plain["file"])) if plain is not None else ""
+                )
+                source_file = os.path.abspath(entry.source) if entry.source else ""
+                if plain_file and plain_file != source_file:
+                    aliased.append(
+                        f"{name} → 常规与加粗都指向 {plain['family']}"
+                        f"（fontconfig 里本来就有 strong 别名，与产物无关）"
+                    )
+                else:
+                    shadowed.append(
+                        f"{name} → 命中 {match['file']}"
+                        f"（{match['family']} / {match['style']}），"
+                        f"而不是 {entry.output}"
+                    )
+    if not stale and not missing and not shadowed:
+        print(f"✓ {len(entries)} 个产物都是最新的，且加粗请求都能命中。")
+        if aliased:
+            print()
+            print(f"ℹ {len(aliased)} 个家族名被 fontconfig 的 strong 别名整体重定向了")
+            print("  （常规字重同样如此，不是本工具造成的）：")
+            for item in aliased:
+                print(f"    {item}")
+            print()
+            print("  如果你希望这些英文名也用上本工具的产物，删掉对应的别名规则：")
+            print("      grep -rn \"<family>家族名</family>\" ~/.config/fontconfig/ /etc/fonts/conf.d/")
         return 0
     if stale:
         print(f"⚠ {len(stale)} 个产物已过期：")
@@ -325,6 +378,21 @@ def cmd_check(args: argparse.Namespace) -> int:
     if missing:
         print(f"⚠ {len(missing)} 个文件缺失：")
         for item in missing:
+            print(f"    {item}")
+    if shadowed:
+        print()
+        print(f"⚠ {len(shadowed)} 个家族的加粗请求没有命中本工具的产物：")
+        for item in shadowed:
+            print(f"    {item}")
+        print()
+        print("  通常是 fontconfig 里有一条 <alias binding=\"strong\"> 规则")
+        print("  把这个家族名重定向到了别的字体。检查：")
+        print("      grep -rn \"<family>家族名</family>\" ~/.config/fontconfig/ /etc/fonts/conf.d/")
+    if aliased:
+        print()
+        print(f"ℹ {len(aliased)} 个家族名被 fontconfig 的 strong 别名整体重定向了")
+        print("  （常规字重同样如此，与产物无关）：")
+        for item in aliased:
             print(f"    {item}")
     return 1
 
@@ -664,6 +732,8 @@ def build_parser() -> argparse.ArgumentParser:
     # --- check ---
     p_check = sub.add_parser("check", help="检测产物是否过期")
     p_check.add_argument("--install-dir", help=f"安装目录，默认 {INSTALL_DIR}")
+    p_check.add_argument("--no-fc-check", action="store_true",
+                       help="不检查加粗请求是否真的命中产物（跳过 fc-match）")
     p_check.set_defaults(func=cmd_check)
 
     # --- uninstall ---

@@ -161,7 +161,7 @@ boldgen generate --family SimSun --family SimHei --family KaiTi
 
 # 4. See what is installed
 boldgen list
-boldgen check          # reports products stale after the source font changed
+boldgen check          # reports stale products; also checks that bold requests really land on them
 
 # 5. Undo
 boldgen uninstall --family SimSun
@@ -177,7 +177,7 @@ boldgen uninstall --all
 | `boldgen generate` | generate bold faces for the given families |
 | `boldgen alias` | fontconfig alias mode (list / write / remove rules) |
 | `boldgen list` | list installed products |
-| `boldgen check` | detect products made stale by a changed source font |
+| `boldgen check` | detect products made stale by a changed source font; verify bold requests actually match the products |
 | `boldgen uninstall` | remove installed products |
 | `boldgen mktest` | build a `.docx` for manual visual verification |
 

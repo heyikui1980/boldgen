@@ -27,3 +27,6 @@ manifest.json
 .idea/
 *.swp
 .DS_Store
+
+# 本地临时脚本
+.scratch/

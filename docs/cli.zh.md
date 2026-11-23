@@ -166,14 +166,18 @@ boldgen list --json
 
 ## `boldgen check`
 
-检测产物是否**过期**——即源字体在生成之后被改动过（升级、替换等）。
+检测两件事：
+
+1. 产物是否**过期**——即源字体在生成之后被改动过（升级、替换等）；
+2. 加粗请求**是否真的落到了产物上**——被 fontconfig 的 `<alias binding="strong">`
+   规则劫持的话，产物再完美也不会被用上，这是"装了却没效果"最常见的原因。
 
 ```bash
 boldgen check
 ```
 
 ```
-✓ 22 个产物都是最新的。
+✓ 22 个产物都是最新的，且加粗请求都能命中。
 ```
 
 ```
@@ -183,7 +187,41 @@ boldgen check
     SimHei-Bold.ttf
 ```
 
-退出码：有过期或缺失时返回 `1`。
+```
+⚠ 1 个家族的加粗请求没有命中本工具的产物：
+    SimSun → 命中 /usr/share/fonts/opentype/noto/NotoSans-Bold.ttf
+    （Noto Sans / Bold），而不是 SimSun-Bold.ttf
+
+  通常是 fontconfig 里有一条 <alias binding="strong"> 规则
+  把这个家族名重定向到了别的字体。检查：
+      grep -rn "<family>家族名</family>" ~/.config/fontconfig/ /etc/fonts/conf.d/
+```
+
+| 参数 | 默认 | 说明 |
+|---|---|---|
+| `--no-fc-check` | 关 | 跳过 fontconfig 命中检查（只查过期与缺失） |
+
+退出码：有过期、缺失或加粗被劫持时返回 `1`。
+
+### 关于 fontconfig 命中检查的几个坑
+
+- **一个家族往往有多个名字**（英文名 + 中文名，如 `FZFangSong-Z02` 和 `方正仿宋_GBK`）。
+  应用用哪个名字请求加粗是不确定的，所以 `check` 会把**每个**名字都查一遍。
+- **连字符必须转义**。fontconfig 的模式解析器（`FcNameParse`）会把家族名里
+  **第一个连字符之后的整段**当成"样式后缀"丢掉：
+
+  ```
+  $ fc-pattern "SimSun-Bold"
+  Pattern has 1 elts (size 16)
+      family: "SimSun"(s)
+  ```
+
+  也就是说 `fc-match "FZFangSong-Z02"` 会静默匹配失败并回落到 sans-serif。
+  正确的写法是用反斜杠转义：`fc-match "FZFangSong\\-Z02"`。
+  `boldgen` 内部会自动转义，你手敲 `fc-match` 时记得也要加。
+- **常规字重也被劫持 vs 只有加粗被劫持**：如果连常规字重都被 strong 别名重定向了，
+  说明是系统/用户本来就配了别名（比如把 `KaiTi` 指向 `AR PL UKai CN`），
+  与本工具的产物无关，`check` 会把它归到"ℹ 提示"而不是"⚠ 警告"。
 
 ---
 

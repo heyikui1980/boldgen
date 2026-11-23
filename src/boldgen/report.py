@@ -30,12 +30,27 @@ def format_size(num: float) -> str:
     return f"{value:.1f} TB"
 
 
-def _pad(text: str, width: int) -> str:
-    """按**显示宽度**补空格（CJK 字符占两列）。"""
+def _display_width(text: str) -> int:
+    """文本的**显示宽度**（CJK 字符占两列）。"""
     import unicodedata
 
-    display = sum(2 if unicodedata.east_asian_width(ch) in "WF" else 1 for ch in text)
-    return text + " " * max(0, width - display)
+    return sum(2 if unicodedata.east_asian_width(ch) in "WF" else 1 for ch in text)
+
+
+def _pad(text: str, width: int) -> str:
+    """按**显示宽度**补空格（CJK 字符占两列）。"""
+    return text + " " * max(0, width - _display_width(text))
+
+
+def _column_widths(headers: Sequence[str], rows: Sequence[Sequence[str]]) -> List[int]:
+    """按显示宽度算每列的宽度。"""
+    return [
+        max(
+            _display_width(headers[i]),
+            max((_display_width(r[i]) for r in rows), default=0),
+        )
+        for i in range(len(headers))
+    ]
 
 
 def render_family_table(families: Sequence[FamilyInfo]) -> str:
@@ -54,10 +69,7 @@ def render_family_table(families: Sequence[FamilyInfo]) -> str:
             ]
         )
     headers = ["家族", "状态", "中文", "源文件"]
-    widths = [
-        max(len(headers[i]), max((len(r[i]) for r in rows), default=0))
-        for i in range(len(headers))
-    ]
+    widths = _column_widths(headers, rows)
     lines = [
         "  ".join(_pad(headers[i], widths[i]) for i in range(len(headers))).rstrip(),
         "  ".join("-" * widths[i] for i in range(len(headers))),
@@ -85,10 +97,7 @@ def render_build_table(results: Sequence[BuildResult]) -> str:
             ]
         )
     headers = ["家族", "字形数", "半径", "大小", "文件"]
-    widths = [
-        max(len(headers[i]), max((len(r[i]) for r in rows), default=0))
-        for i in range(len(headers))
-    ]
+    widths = _column_widths(headers, rows)
     lines = [
         "  ".join(_pad(headers[i], widths[i]) for i in range(len(headers))).rstrip(),
         "  ".join("-" * widths[i] for i in range(len(headers))),
