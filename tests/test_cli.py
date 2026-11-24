@@ -1,4 +1,4 @@
-"""命令��接口的测试。
+"""命令行接口的测试。
 
 这些测试不碰系统字体目录：用 monkeypatch 把 ``scan`` 换成一个假的家族列表，
 所有产物都写进 pytest 的临时目录。
@@ -197,3 +197,18 @@ def test_alias_writes_rules(tmp_path, capsys, monkeypatch, patched_scan):
     assert cli.main(["alias", "--family", "FakeFamily"]) == 0
     assert written["rules"][0].source_family == "FakeFamily"
     assert written["rules"][0].target_family == "Noto Sans CJK SC"
+
+
+def test_plan_alias_rules_comment_names_the_aliased_family(patched_scan):
+    """每条规则的注释要写**被重定向的那个名字**，不是家族的主名。
+
+    一个家族往往有多个名字（SimSun / 宋体），规则注释要能对上号。
+    """
+    rules = cli._plan_alias_rules(
+        [patched_scan], [patched_scan], forced_target="Noto Serif CJK SC"
+    )
+    assert [r.source_family for r in rules] == ["FakeFamily", "假字体"]
+    assert [r.comment for r in rules] == [
+        "FakeFamily → Noto Serif CJK SC",
+        "假字体 → Noto Serif CJK SC",
+    ]

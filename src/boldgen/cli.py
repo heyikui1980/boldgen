@@ -585,7 +585,7 @@ def _plan_alias_rules(
                 AliasRule(
                     source_family=name,
                     target_family=target,
-                    comment=f"{info.key} → {target}",
+                    comment=f"{name} → {target}",
                 )
             )
     return rules
