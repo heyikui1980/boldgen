@@ -115,6 +115,22 @@ CI（`.github/workflows/ci.yml`）跑的就是这两件事。
 
 ---
 
+## 发版
+
+维护者发版走 **trusted publishing**（PyPI 侧的 OIDC，不需要 API token），
+但**第一次**上传必须手动。完整流程、PyPI 侧的 Pending publisher 怎么填、
+以及为什么 README 里的链接必须写成绝对 URL，都写在
+[`docs/publishing.zh.md`](docs/publishing.zh.md) 里。
+
+发版前必须过这两关：
+
+```bash
+.venv/bin/python -m pytest -q          # 全部测试通过
+.venv/bin/python -m build              # 能打出 sdist + wheel
+```
+
+---
+
 ## 授权问题请先读文档
 
 本项目**只分发代码**。生成物的授权由**源字体**决定。

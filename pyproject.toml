@@ -26,7 +26,8 @@ dependencies = []
 # 可选：仅在需要 CFF/OTF 支持、子集化或交叉校验时安装。
 # 内置引擎覆盖 TrueType(glyf) 轮廓字体，不需要 fontTools。
 ft = ["fonttools>=4.40"]
-dev = ["pytest>=7.0", "build>=1.0", "fonttools>=4.40"]
+# twine 只在发版时用得上（见 docs/publishing.zh.md），但放进 dev 里省得临时再装
+dev = ["pytest>=7.0", "build>=1.0", "fonttools>=4.40", "twine>=4.0"]
 
 [project.scripts]
 boldgen = "boldgen.cli:main"

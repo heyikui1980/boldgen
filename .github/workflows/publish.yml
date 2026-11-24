@@ -12,16 +12,23 @@ name: Publish to PyPI
 #        Workflow name     : publish.yml
 #      （Pending publisher 不需要 API token，是最省事的方式。）
 #
-# 配好之后，在 GitHub 上新建一个 `pypi` environment（Settings → Environments），
-# 然后打标签即可：
+# 配好之后，打标签即可：
 #
 #     git tag v0.1.1 && git push origin v0.1.1
 #
-# 想手动发就点本 workflow 的 "Run workflow"。
+# 想手动发就点本 workflow 的 "Run workflow"（confirm 输入 yes）。
 #
-# 若改用 API token 方式，把下面的 `permissions` 换成
+# 关于下面的 `environment: pypi`：
+# PyPI 的 trusted publishing 只认「项目名 + 仓库 + workflow 文件名」，不关心
+# environment。这里写它只是为了挂一条部署记录 + 一个指向 PyPI 项目页的链接。
+# 这个 environment 可以手动建，也可以不建——GitHub Actions 第一次跑这个 job 时
+# 会自动建一个不带任何保护规则的同名 environment。
+#
+# 若改用 API token 方式，去掉 `id-token: write`，改成
 # `contents: read`，并在 `environment: pypi` 里加一个名为 `PYPI_API_TOKEN`
-# 的 secret——本 workflow 用的是 trusted publishing，不需要 token。
+# 的 secret。
+#
+# 完整发布流程见 docs/publishing.zh.md。
 
 on:
   workflow_dispatch:

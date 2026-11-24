@@ -264,6 +264,7 @@ machine and respect the source font's terms.
 | [`docs/cli.zh.md`](https://github.com/heyikui1980/boldgen/blob/main/docs/cli.zh.md) | complete reference for every subcommand |
 | [`docs/licensing.zh.md`](https://github.com/heyikui1980/boldgen/blob/main/docs/licensing.zh.md) | per-font license and redistribution table |
 | [`docs/upstream/wps-issue.zh.md`](https://github.com/heyikui1980/boldgen/blob/main/docs/upstream/wps-issue.zh.md) | issue template for WPS + minimal reproduction |
+| [`docs/publishing.zh.md`](https://github.com/heyikui1980/boldgen/blob/main/docs/publishing.zh.md) | maintainer guide: the full PyPI release procedure |
 
 ## Contributing
 

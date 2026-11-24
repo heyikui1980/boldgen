@@ -89,6 +89,11 @@
 - `docs/cli.zh.md`：完整 CLI 参数说明。
 - `docs/licensing.zh.md`：各类字体的授权与可再分发性对照表。
 - `docs/upstream/wps-issue.zh.md`：给 WPS 的 issue 模板与最小复现步骤。
+- `docs/publishing.zh.md`：维护者向——发布到 PyPI 的完整流程
+  （Pending publisher 怎么填、第一次为什么必须手动上传、
+  为什么 README 里的链接要写成绝对 URL）。
+- README 里指向仓库内文件的链接**全部改成绝对 URL**——PyPI 从自己的域名
+  渲染 `long_description`，相对链接会 404。页内锚点不受影响。
 
 ### 测试
 

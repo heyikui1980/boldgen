@@ -241,6 +241,7 @@ boldgen mktest --out /tmp/t.docx --open
 | [`docs/cli.zh.md`](https://github.com/heyikui1980/boldgen/blob/main/docs/cli.zh.md) | 每个子命令的完整参数说明 |
 | [`docs/licensing.zh.md`](https://github.com/heyikui1980/boldgen/blob/main/docs/licensing.zh.md) | 各类字体的授权与可再分发性对照表 |
 | [`docs/upstream/wps-issue.zh.md`](https://github.com/heyikui1980/boldgen/blob/main/docs/upstream/wps-issue.zh.md) | 给 WPS 的 issue 模板 + 最小复现步骤 |
+| [`docs/publishing.zh.md`](https://github.com/heyikui1980/boldgen/blob/main/docs/publishing.zh.md) | 维护者向：发布到 PyPI 的完整流程 |
 
 ## 参与贡献
 
