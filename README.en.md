@@ -1,7 +1,7 @@
 # boldgen — bake real Bold faces for families that have none
 
 [![CI](https://github.com/heyikui1980/boldgen/actions/workflows/ci.yml/badge.svg)](https://github.com/heyikui1980/boldgen/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/heyikui1980/boldgen/blob/main/LICENSE)
 
 **WPS on Linux renders bold Chinese text as smeared black blobs.**
 `boldgen` bakes a real Bold font file for every family that lacks one, so that
@@ -48,7 +48,7 @@ $ boldgen generate --family SimSun --family SimHei
 - [Known limitations](#known-limitations)
 - [Licensing](#licensing)
 - [Documentation](#documentation)
-- [中文文档](README.md)
+- [中文文档](https://github.com/heyikui1980/boldgen/blob/main/README.md)
 
 ---
 
@@ -86,7 +86,7 @@ Measured ink area of the bold text, relative to regular:
 |---|---|---|---|
 | ink ratio | 1.2 – 1.5 | **1.85** | **2.3 – 10.2** |
 
-> The full evidence chain is in [`docs/how-it-works.zh.md`](docs/how-it-works.zh.md).
+> The full evidence chain is in [`docs/how-it-works.zh.md`](https://github.com/heyikui1980/boldgen/blob/main/docs/how-it-works.zh.md).
 
 **So the fix is not "patch WPS" — it is "give these families a real bold".**
 Once fontconfig can match a genuine Bold face, the application never has to
@@ -199,7 +199,7 @@ boldgen uninstall --all
 | `boldgen uninstall` | remove installed products |
 | `boldgen mktest` | build a `.docx` for manual visual verification |
 
-Full reference: [`docs/cli.zh.md`](docs/cli.zh.md).
+Full reference: [`docs/cli.zh.md`](https://github.com/heyikui1980/boldgen/blob/main/docs/cli.zh.md).
 
 ## Verifying the result
 
@@ -239,7 +239,7 @@ LibreOffice: the bold line should look like a proper bold, not a blob.
 
 ## Licensing
 
-The **software** is MIT licensed — see [`LICENSE`](LICENSE).
+The **software** is MIT licensed — see [`LICENSE`](https://github.com/heyikui1980/boldgen/blob/main/LICENSE).
 
 **Generated font files are not distributed with this project.** They inherit the
 license of their source font:
@@ -251,7 +251,7 @@ license of their source font:
 | Noto / Source Han / WenQuanYi / Arphic | per their own license |
 | DejaVu / Liberation and friends | per their own license |
 
-> See [`docs/licensing.zh.md`](docs/licensing.zh.md) and [`NOTICE`](NOTICE).
+> See [`docs/licensing.zh.md`](https://github.com/heyikui1980/boldgen/blob/main/docs/licensing.zh.md) and [`NOTICE`](https://github.com/heyikui1980/boldgen/blob/main/NOTICE).
 
 This project **distributes code only**. Generate derived fonts on your own
 machine and respect the source font's terms.
@@ -260,15 +260,15 @@ machine and respect the source font's terms.
 
 | Document | Contents |
 |---|---|
-| [`docs/how-it-works.zh.md`](docs/how-it-works.zh.md) | the dilation algorithm + the full evidence chain for the WPS bug |
-| [`docs/cli.zh.md`](docs/cli.zh.md) | complete reference for every subcommand |
-| [`docs/licensing.zh.md`](docs/licensing.zh.md) | per-font license and redistribution table |
-| [`docs/upstream/wps-issue.zh.md`](docs/upstream/wps-issue.zh.md) | issue template for WPS + minimal reproduction |
+| [`docs/how-it-works.zh.md`](https://github.com/heyikui1980/boldgen/blob/main/docs/how-it-works.zh.md) | the dilation algorithm + the full evidence chain for the WPS bug |
+| [`docs/cli.zh.md`](https://github.com/heyikui1980/boldgen/blob/main/docs/cli.zh.md) | complete reference for every subcommand |
+| [`docs/licensing.zh.md`](https://github.com/heyikui1980/boldgen/blob/main/docs/licensing.zh.md) | per-font license and redistribution table |
+| [`docs/upstream/wps-issue.zh.md`](https://github.com/heyikui1980/boldgen/blob/main/docs/upstream/wps-issue.zh.md) | issue template for WPS + minimal reproduction |
 
 ## Contributing
 
-See [`CONTRIBUTING.md`](CONTRIBUTING.md).
+See [`CONTRIBUTING.md`](https://github.com/heyikui1980/boldgen/blob/main/CONTRIBUTING.md).
 
 ## License
 
-[MIT](LICENSE) — but read [`NOTICE`](NOTICE) first.
+[MIT](https://github.com/heyikui1980/boldgen/blob/main/LICENSE) — but read [`NOTICE`](https://github.com/heyikui1980/boldgen/blob/main/NOTICE) first.

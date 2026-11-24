@@ -1,7 +1,7 @@
 # boldgen — 给缺粗体的字体家族烘焙真正的 Bold
 
 [![CI](https://github.com/heyikui1980/boldgen/actions/workflows/ci.yml/badge.svg)](https://github.com/heyikui1980/boldgen/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/heyikui1980/boldgen/blob/main/LICENSE)
 
 **Linux 上的 WPS（以及其它合成粗体实现有问题的应用）会把中文加粗渲染成一团涂抹状黑块。**
 `boldgen` 为**缺少粗体的字体家族**离线烘焙出真正的 Bold 字体文件，
@@ -44,7 +44,7 @@ $ boldgen generate --family 宋体 --family 黑体
 - [已知限制](#已知限制)
 - [授权](#授权)
 - [文档](#文档)
-- [English](README.en.md)
+- [English](https://github.com/heyikui1980/boldgen/blob/main/README.en.md)
 
 ---
 
@@ -79,7 +79,7 @@ $ boldgen generate --family 宋体 --family 黑体
 |---|---|---|---|
 | 墨量倍数 | 1.2 – 1.5 | **1.85** | **2.3 – 10.2** |
 
-> 完整证据链见 [`docs/how-it-works.zh.md`](docs/how-it-works.zh.md)。
+> 完整证据链见 [`docs/how-it-works.zh.md`](https://github.com/heyikui1980/boldgen/blob/main/docs/how-it-works.zh.md)。
 
 **所以真正的解法不是"修 WPS"，而是"让这些家族有真正的粗体"。**
 一旦 fontconfig 能匹配到一个真实的 Bold face，应用根本不需要自己去合成，
@@ -182,7 +182,7 @@ boldgen uninstall --all
 | `boldgen uninstall` | 移除已安装的产物 |
 | `boldgen mktest` | 生成用于人工验证的 `.docx` 测试文档 |
 
-完整参数见 [`docs/cli.zh.md`](docs/cli.zh.md)。
+完整参数见 [`docs/cli.zh.md`](https://github.com/heyikui1980/boldgen/blob/main/docs/cli.zh.md)。
 
 ## 验证效果
 
@@ -218,7 +218,7 @@ boldgen mktest --out /tmp/t.docx --open
 
 ## 授权
 
-**软件本身**用 MIT 协议，见 [`LICENSE`](LICENSE)。
+**软件本身**用 MIT 协议，见 [`LICENSE`](https://github.com/heyikui1980/boldgen/blob/main/LICENSE)。
 
 **生成的字体文件不随本项目分发**，它们继承源字体的授权：
 
@@ -229,7 +229,7 @@ boldgen mktest --out /tmp/t.docx --open
 | Noto / 思源 / 文泉驿 / 文鼎 | 按各自授权 |
 | DejaVu / Liberation 等 | 按各自授权 |
 
-> 详见 [`docs/licensing.zh.md`](docs/licensing.zh.md) 与 [`NOTICE`](NOTICE)。
+> 详见 [`docs/licensing.zh.md`](https://github.com/heyikui1980/boldgen/blob/main/docs/licensing.zh.md) 与 [`NOTICE`](https://github.com/heyikui1980/boldgen/blob/main/NOTICE)。
 
 本项目**只分发代码**。请在你自己的机器上生成衍生字体，并遵守源字体的授权条款。
 
@@ -237,15 +237,15 @@ boldgen mktest --out /tmp/t.docx --open
 
 | 文档 | 内容 |
 |---|---|
-| [`docs/how-it-works.zh.md`](docs/how-it-works.zh.md) | 轮廓外扩算法 + WPS bug 的完整证据链 |
-| [`docs/cli.zh.md`](docs/cli.zh.md) | 每个子命令的完整参数说明 |
-| [`docs/licensing.zh.md`](docs/licensing.zh.md) | 各类字体的授权与可再分发性对照表 |
-| [`docs/upstream/wps-issue.zh.md`](docs/upstream/wps-issue.zh.md) | 给 WPS 的 issue 模板 + 最小复现步骤 |
+| [`docs/how-it-works.zh.md`](https://github.com/heyikui1980/boldgen/blob/main/docs/how-it-works.zh.md) | 轮廓外扩算法 + WPS bug 的完整证据链 |
+| [`docs/cli.zh.md`](https://github.com/heyikui1980/boldgen/blob/main/docs/cli.zh.md) | 每个子命令的完整参数说明 |
+| [`docs/licensing.zh.md`](https://github.com/heyikui1980/boldgen/blob/main/docs/licensing.zh.md) | 各类字体的授权与可再分发性对照表 |
+| [`docs/upstream/wps-issue.zh.md`](https://github.com/heyikui1980/boldgen/blob/main/docs/upstream/wps-issue.zh.md) | 给 WPS 的 issue 模板 + 最小复现步骤 |
 
 ## 参与贡献
 
-见 [`CONTRIBUTING.md`](CONTRIBUTING.md)。
+见 [`CONTRIBUTING.md`](https://github.com/heyikui1980/boldgen/blob/main/CONTRIBUTING.md)。
 
 ## License
 
-[MIT](LICENSE) — 但请先读 [`NOTICE`](NOTICE)。
+[MIT](https://github.com/heyikui1980/boldgen/blob/main/LICENSE) — 但请先读 [`NOTICE`](https://github.com/heyikui1980/boldgen/blob/main/NOTICE)。
