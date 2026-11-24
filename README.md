@@ -123,11 +123,25 @@ WPS 的 bug 就绕过去了——而且不止 WPS，别的应用也一并受益�
 ## 安装
 
 ```bash
-pipx install boldgen            # 从 PyPI（发布后）
 pipx install "git+https://github.com/heyikui1980/boldgen"   # 从源码
 ```
 
-零必需依赖，纯 Python 3.9+ 标准库实现。
+或者克隆下来本地装：
+
+```bash
+git clone https://github.com/heyikui1980/boldgen
+cd boldgen
+pipx install .
+```
+
+零必需依赖，纯 Python 3.9+ 标准库实现。想额外装 `fonttools` 做交叉验证：
+
+```bash
+pipx install "boldgen[ft] @ git+https://github.com/heyikui1980/boldgen"
+```
+
+> **PyPI 版本尚未发布。** 上线后就能直接 `pipx install boldgen`；
+> 在此之前请用上面的源码安装方式。
 
 > **CFF/OTF 轮廓**（`.otf`）目前**不支持**——内置引擎只处理 TrueType（`glyf`）轮廓。
 > 遇到这类字体会明确报错，不会静默产出坏文件。

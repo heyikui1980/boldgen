@@ -136,9 +136,26 @@ tight or when you just need a quick stand-in.
 ## Installation
 
 ```bash
-pipx install boldgen                          # from PyPI (once published)
 pipx install "git+https://github.com/heyikui1980/boldgen"   # from source
 ```
+
+Or clone and install locally:
+
+```bash
+git clone https://github.com/heyikui1980/boldgen
+cd boldgen
+pipx install .
+```
+
+No required dependencies — pure Python 3.9+ standard library. To pull in
+`fonttools` for cross-validation:
+
+```bash
+pipx install "boldgen[ft] @ git+https://github.com/heyikui1980/boldgen"
+```
+
+> **Not on PyPI yet.** Once it is published, `pipx install boldgen` will work;
+> until then use the source install above.
 
 Zero required dependencies — pure Python 3.9+ standard library.
 

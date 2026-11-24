@@ -1,0 +1,81 @@
+name: Publish to PyPI
+
+# 只在手动触发、或推送 v* 标签时运行。
+#
+# 前置条件（在 PyPI 侧一次性配好）：
+#   1. 在 PyPI 上创建名为 `boldgen` 的项目；
+#   2. 在该项目的 "Publishing" 页面添加一个 **Pending publisher**，
+#      填：
+#        PyPI project name : boldgen
+#        Owner             : heyikui1980
+#        Repository name   : boldgen
+#        Workflow name     : publish.yml
+#      （Pending publisher 不需要 API token，是最省事的方式。）
+#
+# 配好之后，在 GitHub 上新建一个 `pypi` environment（Settings → Environments），
+# 然后打标签即可：
+#
+#     git tag v0.1.1 && git push origin v0.1.1
+#
+# 想手动发就点本 workflow 的 "Run workflow"。
+#
+# 若改用 API token 方式，把下面的 `permissions` 换成
+# `contents: read`，并在 `environment: pypi` 里加一个名为 `PYPI_API_TOKEN`
+# 的 secret——本 workflow 用的是 trusted publishing，不需要 token。
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: '确认发布到 PyPI（输入 yes）'
+        required: true
+        default: 'no'
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish:
+    name: 构建并发布
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/boldgen/
+    permissions:
+      contents: read
+      # trusted publishing 靠这个换 OIDC token
+      id-token: write
+    steps:
+      - name: 确认
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          if [ "${{ inputs.confirm }}" != "yes" ]; then
+            echo "::error::没有确认，终止"
+            exit 1
+          fi
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 安装构建工具
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install build
+
+      - name: 构建
+        run: python -m build
+
+      - name: 确认包里没有字体文件
+        run: |
+          # 衍生字体受源字体授权约束，绝不能进发行包
+          if find dist/ -type f \( -name '*.ttf' -o -name '*.ttc' -o -name '*.otf' -o -name '*.otc' \) | grep -q .; then
+            echo "::error::发行包里出现了字体文件"
+            find dist/ -type f \( -name '*.ttf' -o -name '*.ttc' -o -name '*.otf' -o -name '*.otc' \)
+            exit 1
+          fi
+
+      - name: 发布到 PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
