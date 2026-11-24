@@ -3,14 +3,16 @@ name: Publish to PyPI
 # 只在手动触发、或推送 v* 标签时运行。
 #
 # 前置条件（在 PyPI 侧一次性配好）：
-#   1. 在 PyPI 上创建名为 `boldgen` 的项目；
-#   2. 在该项目的 "Publishing" 页面添加一个 **Pending publisher**，
-#      填：
+#   在 <https://pypi.org/manage/account/publishing/> 登记一个
+#   **Pending publisher**，填：
 #        PyPI project name : boldgen
 #        Owner             : heyikui1980
 #        Repository name   : boldgen
 #        Workflow name     : publish.yml
-#      （Pending publisher 不需要 API token，是最省事的方式。）
+#        Environment name  : pypi（可选，但要跟下面的 environment 一致）
+#
+#   项目本身**不需要提前创建**——第一次成功上传时 PyPI 会自动建出来，
+#   并把 pending publisher 转成正式的 publisher。全程不需要 API token。
 #
 # 配好之后，打标签即可：
 #
